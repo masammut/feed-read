@@ -13,6 +13,7 @@ var request    = require('request')
 //              * "link"
 //              * "content"
 //              * "published"
+//              * "media" - {thumbnail, content} (RSS Only - for now)
 //              * "feed" - {name, source, link}
 // 
 // Returns nothing.
@@ -173,6 +174,15 @@ FeedRead.rss = function(xml, source, callback) {
     callback(null, _.filter(_.map(articles,
       function(art) {
         if (!art.children.length) return false;
+
+        var thumbnail = child_by_name(art, "media:thumbnail");
+        var content = child_by_name(art, "media:content"); 
+        
+        var media = {
+          thumbnail: (thumbnail && thumbnail.attributes) ? thumbnail.attributes : null,
+          content: (content && content.attributes) ? content.attributes : null
+        }
+
         var obj = {
             title:     child_data(art, "title")
           , content:   scrub_html(child_data(art, "content:encoded"))
@@ -181,6 +191,7 @@ FeedRead.rss = function(xml, source, callback) {
           , author:    child_data(art, "author")
                     || child_data(art, "dc:creator")
           , link:      child_data(art, "link")
+          , media:     media
           , feed:      meta
           };
         if (obj.published) obj.published = new Date(obj.published);

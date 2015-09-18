@@ -7,7 +7,7 @@ a common article object.
 
 # Installation
 
-    $ npm install feed-read
+    $ npm install masammut/feed-read
 
 # Usage
 
@@ -25,6 +25,7 @@ Fetch a feed.
       //   * "link"      - The original article link (String).
       //   * "content"   - The HTML content of the article (String).
       //   * "published" - The date that the article was published (Date).
+      //   * "media"     - {thumbnail (Attributes as Object), content (Attributes as Object)} - RSS Only for now
       //   * "feed"      - {name, source, link}
       // 
     });
