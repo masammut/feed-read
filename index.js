@@ -176,7 +176,7 @@ FeedRead.rss = function(xml, source, callback) {
       meta.name = child_data(current_tag, "title");
       var image = child_by_name(current_tag, "image");
       if (image){
-        meta.image = image.attributes.url;
+        meta.image = child_data(image, "url");
       }
     }
   };
