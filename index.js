@@ -6,15 +6,20 @@ var request    = require('request')
 // Public: Fetch the articles from the RSS or ATOM feed.
 // 
 // url      - The String feed url, or an Array of urls.
-// callback - Receives `(err, articles)`, where each article has properties:
+// callback - Receives `(err, feed, articles)`, where each article has properties:
+//
+//              feed:
+//              * "name"
+//              * "source"
+//              * "link"
 //          
+//              articles:
 //              * "title"
 //              * "author"
 //              * "link"
 //              * "content"
 //              * "published"
 //              * "media" - {thumbnail, content} (RSS Only - for now)
-//              * "feed" - {name, source, link}
 // 
 // Returns nothing.
 var FeedRead = module.exports = function(feed_url, callback) {
@@ -57,7 +62,7 @@ FeedRead.identify = function(xml) {
 // Internal: Get a single feed.
 // 
 // feed_url - String url.
-// callback - Receives `(err, articles)`.
+// callback - Receives `(err, feed, articles)`.
 // 
 FeedRead.get = function(feed_url, callback) {
   request(feed_url, {timeout: 5000}, function(err, res, body) {
@@ -79,7 +84,7 @@ FeedRead.get = function(feed_url, callback) {
 // 
 // xml      - A XML String.
 // source   - (optional)
-// callback - Receives `(err, articles)`.
+// callback - Receives `(err, feed, articles)`.
 // 
 // Returns an Array of Articles.
 FeedRead.atom = function(xml, source, callback) {
@@ -113,7 +118,7 @@ FeedRead.atom = function(xml, source, callback) {
   };
   
   parser.onend = function() {
-    callback(null, _.filter(_.map(articles,
+    callback(null, meta, _.filter(_.map(articles,
       function(art) {
         if (!art.children.length) return false;
         var author = child_by_name(art, "author");
@@ -126,7 +131,6 @@ FeedRead.atom = function(xml, source, callback) {
                     || child_data(art, "updated")
           , author:    author || default_author
           , link:      child_by_name(art, "link").attributes.href
-          , feed:      meta
           };
         if (obj.published) obj.published = new Date(obj.published);
         return obj;
@@ -142,7 +146,7 @@ FeedRead.atom = function(xml, source, callback) {
 // 
 // xml      - A XML String.
 // source   - (optional)
-// callback - Receives `(err, articles)`.
+// callback - Receives `(err, feed, articles)`.
 // 
 // Returns an Array of Articles.
 FeedRead.rss = function(xml, source, callback) {
@@ -171,7 +175,7 @@ FeedRead.rss = function(xml, source, callback) {
   };
   
   parser.onend = function() {
-    callback(null, _.filter(_.map(articles,
+    callback(null, meta, _.filter(_.map(articles,
       function(art) {
         if (!art.children.length) return false;
 
@@ -192,7 +196,6 @@ FeedRead.rss = function(xml, source, callback) {
                     || child_data(art, "dc:creator")
           , link:      child_data(art, "link")
           , media:     media
-          , feed:      meta
           };
         if (obj.published) obj.published = new Date(obj.published);
         return obj;

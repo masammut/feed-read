@@ -16,8 +16,14 @@ a common article object.
 ## `feed(url, callback)`
 Fetch a feed.
 
-    feed("http://craphound.com/?feed=rss2", function(err, articles) {
+    feed("http://craphound.com/?feed=rss2", function(err, feed, articles) {
       if (err) throw err;
+      // Feed:
+      //
+      //   * "name"
+      //   * "source"
+      //   * "link"
+      //          
       // Each article has the following properties:
       // 
       //   * "title"     - The article title (String).
@@ -26,7 +32,7 @@ Fetch a feed.
       //   * "content"   - The HTML content of the article (String).
       //   * "published" - The date that the article was published (Date).
       //   * "media"     - {thumbnail (Attributes as Object), content (Attributes as Object)} - RSS Only for now
-      //   * "feed"      - {name, source, link}
+
       // 
     });
 
