@@ -12,6 +12,7 @@ var request    = require('request')
 //              * "name"
 //              * "source"
 //              * "link"
+//              * "image"
 //          
 //              articles:
 //              * "title"
@@ -114,6 +115,8 @@ FeedRead.atom = function(xml, source, callback) {
       meta.link || (meta.link = current_tag.attributes.href);
     } else if (tagname == "title" && !current_tag.parent.parent) {
       meta.name = current_tag.children[0];
+    } else if (tagname == "logo" && !meta.image && !article) { //TODO - Test
+      meta.image = current_tag.children[0];
     }
   };
   
@@ -171,6 +174,10 @@ FeedRead.rss = function(xml, source, callback) {
     } else if (tagname == "channel") {
       meta.link || (meta.link = child_data(current_tag, "link"));
       meta.name = child_data(current_tag, "title");
+      var image = child_by_name(current_tag, "image");
+      if (image){
+        meta.image = image.attributes.url;
+      }
     }
   };
   

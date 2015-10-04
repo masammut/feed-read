@@ -23,6 +23,7 @@ Fetch a feed.
       //   * "name"
       //   * "source"
       //   * "link"
+      //   * "image"
       //          
       // Each article has the following properties:
       // 
@@ -54,4 +55,9 @@ Returns `false` when it is neither RSS or ATOM.
 
 # License
 See LICENSE.
+
+# To Do
+* Test ATOM's feed.image
+* Add media to ATOM
+* Update test scripts
 
