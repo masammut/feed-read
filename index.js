@@ -127,15 +127,13 @@ FeedRead.atom = function(xml, source, callback) {
         var author = child_by_name(art, "author");
         if (author) author = child_data(author, "name");
         
-        var feedburnerOrigLink = child_by_name(art, "feedburner:origLink"); // Quick workaround
-        
         var obj = {
             title:     child_data(art, "title")
           , content:   scrub_html(child_data(art, "content"))
           , published: child_data(art, "published")
                     || child_data(art, "updated")
           , author:    author || default_author
-          , link:      ((feedburnerOrigLink) ? feedburnerOrigLink.attributes.href : null) || child_by_name(art, "link").attributes.href
+          , link:      child_data(art, "feedburner:origLink") || child_by_name(art, "link").attributes.href // Quick workaround for Feedburner
           };
         if (obj.published) obj.published = new Date(obj.published);
         return obj;
